@@ -1464,5 +1464,15 @@
 
     window.onload = initAll;
   </script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+Telegram.WebApp.ready();
+
+async function verifyUser() {
+  const initData = Telegram.WebApp.initData;
+  // ...
+}
+verifyUser();
+</script>
 </body>
 </html>
