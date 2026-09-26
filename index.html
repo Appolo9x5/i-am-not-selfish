@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الوحدة الأولى - أنا لست أنانياً</title>
+  <style>
+    :root {
+      --primary: #1976d2;
+      --primary-dark: #0d47a1;
+      --secondary: #ff9800;
+      --success: #2e7d32;
+      --danger: #d32f2f;
+      --bg: #f4f7f9;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 15px;
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      margin: 0 0 10px 0;
+      font-size: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      border-top: 5px solid var(--primary);
+    }
+
+    .card-title {
+      color: var(--primary-dark);
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 12px;
+      border-bottom: 2px dashed #e0e0e0;
+      padding-bottom: 8px;
+    }
+
+    .instruction {
+      font-size: 1.05rem;
+      color: #555;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .btn-choice {
+      background-color: #f8f9fa;
+      border: 2px solid #cfd8dc;
+      padding: 10px 16px;
+      margin: 6px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      transition: all 0.2s ease;
+      display: inline-block;
+      outline: none;
+    }
+
+    .btn-choice:hover:not(:disabled) {
+      border-color: var(--primary);
+      background-color: #e3f2fd;
+      transform: translateY(-2px);
+    }
+
+    .btn-choice:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+      transform: none !important;
+    }
+
+    .btn-success-active {
+      background-color: #e8f5e9 !important;
+      border-color: var(--success) !important;
+      color: var(--success) !important;
+      font-weight: bold;
+    }
+
+    .btn-danger-active {
+      background-color: #ffebee !important;
+      border-color: var(--danger) !important;
+      color: var(--danger) !important;
+      font-weight: bold;
+    }
+
+    .score-badge {
+      display: flex;
+      justify-content: flex-start;
+      gap: 15px;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #fafafa;
+      border-radius: 8px;
+      font-weight: bold;
+      border: 1px solid #eee;
+    }
+
+    .score-correct { color: var(--success); }
+    .score-incorrect { color: var(--danger); }
+
+    .ordered-list-box {
+      min-height: 80px;
+      background: #fbfbfb;
+      border: 2px dashed #b0bec5;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .ordered-item {
+      background: #e8f5e9;
+      border: 1px solid #81c784;
+      color: #1b5e20;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .pie-preview {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+      background: #fcfcfc;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .pie-circle {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      border: 2px solid #333;
+      flex-shrink: 0;
+    }
+
+    .pie-full { background: #1976d2; }
+    .pie-half { background: conic-gradient(#1976d2 0% 50%, #ffffff 50% 100%); }
+    .pie-quarter { background: conic-gradient(#1976d2 0% 25%, #ffffff 25% 100%); }
+    .pie-part { background: conic-gradient(#1976d2 0% 12.5%, #ffffff 12.5% 100%); }
+
+    .image-q-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    @media (min-width: 650px) {
+      .image-q-card {
+        flex-direction: row;
+        text-align: right;
+        align-items: center;
+      }
+    }
+
+    .real-q-img {
+      width: 220px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid #cfd8dc;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+
+    .image-q-content {
+      flex: 1;
+      width: 100%;
+    }
+
+    .q-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .q-text {
+      flex: 1;
+      font-size: 1.05rem;
+    }
+
+    .feedback-banner {
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: none;
+      font-weight: bold;
+    }
+
+    .feedback-correct {
+      background-color: #d4edda;
+      color: #155724;
+      display: block;
+    }
+
+    .feedback-wrong {
+      background-color: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+
+    .cat-stacked-block {
+      background: #fbfbfb;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .cat-stacked-active {
+      border-color: var(--primary);
+      background-color: #ffffff;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.12);
+    }
+
+    .cat-stacked-disabled {
+      opacity: 0.6;
+      background-color: #f5f5f5;
+    }
+
+    .cat-header {
+      font-weight: bold;
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--primary-dark);
+    }
+
+    .final-score-section {
+      text-align: center;
+      background: linear-gradient(135deg, #ffffff, #f0f4f8);
+      border: 3px solid var(--primary);
+    }
+
+    .final-score-val {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: var(--primary-dark);
+      margin: 15px 0;
+    }
+
+    .final-grade {
+      font-size: 1.6rem;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 25px;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .btn-restart {
+      background-color: #e65100;
+      color: white;
+      border: none;
+      font-size: 1.15rem;
+      padding: 12px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn-restart:hover {
+      background-color: #bf360c;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- تنبيهات الصوت المربوطة بالملفات مع نظام بديل مدمج -->
+  <audio id="snd-correct" src="correct.mp3" preload="auto"></audio>
+  <audio id="snd-incorrect" src="incorrect.mp3" preload="auto"></audio>
+
+  <div class="container">
+    <header>
+      <h1>الوحدة الأولى - أنا لست أنانياً</h1>
+      <p>درس تفاعلي متوافق مع المنهاج الرسمي</p>
+    </header>
+
+    <!-- التمرين 1 -->
+    <section class="card" id="ex1">
+      <h2 class="card-title">التمرين الأول: أتذكر وأنجز</h2>
+      <p class="instruction">استمع إلى المقطع الصوتي بعناية، ثم رتّب الجمل المبعثرة بالترتيب الصحيح:</p>
+      
+      <div style="margin-bottom: 20px; text-align: center; background: #eef2f7; padding: 15px; border-radius: 10px;">
+        <audio id="player-main" controls style="width: 100%; max-width: 450px;">
+          <source src="audio.mp3" type="audio/mpeg">
+          متصفحك لا يدعم مشغل الصوت.
+        </audio>
+      </div>
+
+      <div class="ordered-list-box" id="ex1-ordered">
+        <span style="color: #888;" id="ex1-empty-note">الجمل المرتبة ستظهر هنا تباعاً...</span>
+      </div>
+
+      <div id="ex1-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+      <div id="ex1-feedback" class="feedback-banner"></div>
+
+      <div class="score-badge">
+        <span class="score-correct">الاختيارات الصحيحة: <span id="ex1-correct">0</span></span>
+        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex1-incorrect">0</span></span>
+      </div>
+    </section>
+
+    <!-- التمرين 2 -->
+    <section class="card" id="ex2">
+      <h2 class="card-title">التمرين الثاني: أستعمل الصيغة</h2>
+      <p class="instruction">أكمل بما يناسب الشكل موظفاً (كل، نصف، ربع، جزء): (محاولة واحدة فقط لكل سؤال)</p>
+
+      <div class="pie-preview" style="border: 2px solid #bbdefb; background: #e3f2fd;">
+        <div class="pie-circle pie-full"></div>
+        <div>
+          <strong>مثال توضيحي:</strong> كُلُّ سَطْحِ الْقُرْصِ مُلَوَّنٌ.
+        </div>
+      </div>
+
+      <div id="ex2-container"></div>
+
+      <div class="score-badge">
+        <span class="score-correct">الاختيارات الصحيحة: <span id="ex2-correct">0</span></span>
+        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex2-incorrect">0</span></span>
+      </div>
+    </section>
+
+    <!-- التمرين 3 -->
+    <section class="card" id="ex3">
+      <h2 class="card-title">التمرين الثالث: أفهم النص</h2>
+      <p class="instruction">ضع صحيح أو خطأ أمام كل عبارة: (محاولة واحدة فقط لكل عبارة)</p>
+
+      <div id="ex3-container"></div>
+
+      <div class="score-badge">
+        <span class="score-correct">الاختيارات الصحيحة: <span id="ex3-correct">0</span></span>
+        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex3-incorrect">0</span></span>
+      </div>
+    </section>
+
+    <!-- التمرين 4 -->
+    <section class="card" id="ex4">
+      <h2 class="card-title">التمرين الرابع: أوظف الاسم</h2>
+      
+      <!-- القسم الأول: فئات مرتبة رأسياً فوق بعضها -->
+      <div style="margin-bottom: 25px;">
+        <h3 style="color: var(--primary);">القسم الأول: تصنيف الأسماء</h3>
+        <p class="instruction">ضع كل اسم مع الفئة التي تناسبه. تُمنح 3 محاولات فقط لكل فئة، ثم يُقفل السؤال وتنتقل للفئة الموالية:</p>
+        
+        <div id="ex4-stacked-container"></div>
+        
+        <div class="score-badge">
+          <span class="score-correct">الاختيارات الصحيحة: <span id="ex4-p1-correct">0</span></span>
+          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex4-p1-incorrect">0</span></span>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px dashed #ccc; margin: 25px 0;">
+
+      <!-- القسم الثاني -->
+      <div>
+        <h3 style="color: var(--primary);">القسم الثاني: التعبير بالاسم المناسب</h3>
+        <p class="instruction">شاهد كل صورة واختر الكلمة المناسبة لها: (محاولة واحدة فقط لكل صورة)</p>
+        <div id="ex4-p2-container"></div>
+        <div class="score-badge">
+          <span class="score-correct">الاختيارات الصحيحة: <span id="ex4-p2-correct">0</span></span>
+          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex4-p2-incorrect">0</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- التمرين 5 -->
+    <section class="card" id="ex5">
+      <h2 class="card-title">التمرين الخامس: إملاء</h2>
+      <p class="instruction">تعرف على علامات الوقف وارسمها رسماً صحيحاً داخل الإطار: (محاولة واحدة فقط)</p>
+
+      <div id="ex5-container"></div>
+
+      <div class="score-badge">
+        <span class="score-correct">الاختيارات الصحيحة: <span id="ex5-correct">0</span></span>
+        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex5-incorrect">0</span></span>
+      </div>
+    </section>
+
+    <!-- التمرين 6 -->
+    <section class="card" id="ex6">
+      <h2 class="card-title">التمرين السادس: أقيم تعلماتي</h2>
+      
+      <!-- القسم 1 -->
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: var(--primary);">1. خريطة الكلمة (الأنانية)</h3>
+        <div id="ex6-p1-container"></div>
+        <div class="score-badge">
+          <span class="score-correct">صحيحة: <span id="ex6-p1-correct">0</span></span>
+          <span class="score-incorrect">خاطئة: <span id="ex6-p1-incorrect">0</span></span>
+        </div>
+      </div>
+      <hr style="border: 0; border-top: 1px dashed #eee;">
+
+      <!-- القسم 2 -->
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: var(--primary);">2. هل هذا السلوك صحيح أم خاطئ؟</h3>
+        <div id="ex6-p2-container"></div>
+        <div class="score-badge">
+          <span class="score-correct">صحيحة: <span id="ex6-p2-correct">0</span></span>
+          <span class="score-incorrect">خاطئة: <span id="ex6-p2-incorrect">0</span></span>
+        </div>
+      </div>
+      <hr style="border: 0; border-top: 1px dashed #eee;">
+
+      <!-- القسم 3 -->
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: var(--primary);">3. عبر عن كل صورة مستعملاً (كل، ربع، بعض، نصف، جميع)</h3>
+        <div id="ex6-p3-container"></div>
+        <div class="score-badge">
+          <span class="score-correct">صحيحة: <span id="ex6-p3-correct">0</span></span>
+          <span class="score-incorrect">خاطئة: <span id="ex6-p3-incorrect">0</span></span>
+        </div>
+      </div>
+      <hr style="border: 0; border-top: 1px dashed #eee;">
+
+      <!-- القسم 4 (المعدل) -->
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: var(--primary);">4. الصفات الحميدة لحميد</h3>
+        <p class="instruction">انقر على الصفات المناسبة لحميد: (محاولة واحدة لكل صفة، تنقفل فور النقر عليها)</p>
+        <div id="ex6-p4-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+        <div class="score-badge">
+          <span class="score-correct">صحيحة: <span id="ex6-p4-correct">0</span></span>
+          <span class="score-incorrect">خاطئة: <span id="ex6-p4-incorrect">0</span></span>
+        </div>
+      </div>
+      <hr style="border: 0; border-top: 1px dashed #eee;">
+
+      <!-- القسم 5 -->
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: var(--primary);">5. اختر علامة الوقف المناسبة (. / ؟ / !)</h3>
+        <div id="ex6-p5-container"></div>
+        <div class="score-badge">
+          <span class="score-correct">صحيحة: <span id="ex6-p5-correct">0</span></span>
+          <span class="score-incorrect">خاطئة: <span id="ex6-p5-incorrect">0</span></span>
+        </div>
+      </div>
+      <hr style="border: 0; border-top: 1px dashed #eee;">
+
+      <!-- القسم 6 -->
+      <div>
+        <h3 style="color: var(--primary);">6. اختر الأسماء فقط من الكلمات</h3>
+        <p class="instruction">انقر على الكلمات التي تعتبر أسماءً فقط: (محاولة واحدة لكل كلمة)</p>
+        <div id="ex6-p6-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+        <div class="score-badge">
+          <span class="score-correct">صحيحة: <span id="ex6-p6-correct">0</span></span>
+          <span class="score-incorrect">خاطئة: <span id="ex6-p6-incorrect">0</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- التمرين 7 -->
+    <section class="card" id="ex7">
+      <h2 class="card-title">التمرين السابع: أتدرب على التعبير الكتابي</h2>
+      <div style="background: #fff9c4; border: 1px solid #fbc02d; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: #f57f17; text-align: center;">قصة: الطائرة الورقية</h3>
+        <p style="line-height: 1.8; font-size: 1.1rem; margin-bottom: 0;">
+          "في أحد الأيام اشترى شهاب طائرة ورقية من مصروفه، فذهب مع أخته إسراء إلى الحديقة وراح يلعب بها، وفجأة علقت الطائرة الورقية بالشجرة. حاول شهاب أن يخلصها ولكنه فشل. فطلب من أخته أن تساعده. تسلقت إسراء الشجرة وأنزلت الطائرة. وهكذا فرح شهاب وشكر أخته وسمح لها أن تلعب معه بالطائرة الورقية."
+        </p>
+      </div>
+
+      <div id="ex7-container"></div>
+
+      <div class="score-badge">
+        <span class="score-correct">الاختيارات الصحيحة: <span id="ex7-correct">0</span></span>
+        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex7-incorrect">0</span></span>
+      </div>
+    </section>
+
+    <!-- التقييم العام للوحدة مع زر إعادة المحاولة -->
+    <section class="card final-score-section">
+      <h2 style="color: var(--primary-dark); margin-top: 0;">التقييم العام للوحدة التعليمية</h2>
+      <p>اضغط للتحقق من المجموع الكلي لأدائك في كامل الوحدة:</p>
+      <button class="btn-choice" style="background: var(--primary); color: white; border: none; font-size: 1.2rem; padding: 12px 30px;" onclick="calculateTotalEvaluation()">
+        عرض النتيجة النهائية
+      </button>
+
+      <div id="eval-result" style="display: none; margin-top: 20px;">
+        <div style="display: flex; justify-content: center; gap: 30px; font-size: 1.2rem;">
+          <span style="color: var(--success);">إجمالي الإجابات الصحيحة: <strong id="tot-correct">0</strong></span>
+          <span style="color: var(--danger);">إجمالي الإجابات الخاطئة: <strong id="tot-incorrect">0</strong></span>
+        </div>
+        <div class="final-score-val" id="tot-percent">0%</div>
+        <div class="final-grade" id="tot-grade"></div>
+        <br>
+        <button class="btn-restart" onclick="restartLesson()">
+          🔄 إعادة محاولة الاختبار من البداية
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // --- المحرك الصوتي ---
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    function playSynthTone(freq, duration, type = 'sine') {
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playCorrectSound() {
+      const audio = document.getElementById('snd-correct');
+      if (audio && audio.readyState >= 2) {
+        audio.currentTime = 0;
+        audio.play().catch(() => playNativeCorrectTone());
+      } else {
+        playNativeCorrectTone();
+      }
+    }
+
+    function playIncorrectSound() {
+      const audio = document.getElementById('snd-incorrect');
+      if (audio && audio.readyState >= 2) {
+        audio.currentTime = 0;
+        audio.play().catch(() => playNativeIncorrectTone());
+      } else {
+        playNativeIncorrectTone();
+      }
+    }
+
+    function playNativeCorrectTone() {
+      playSynthTone(523.25, 0.12, 'triangle');
+      setTimeout(() => playSynthTone(659.25, 0.15, 'triangle'), 110);
+      setTimeout(() => playSynthTone(783.99, 0.22, 'triangle'), 220);
+    }
+
+    function playNativeIncorrectTone() {
+      playSynthTone(220, 0.22, 'sawtooth');
+      setTimeout(() => playSynthTone(174.61, 0.28, 'sawtooth'), 140);
+    }
+
+    function shuffle(arr) {
+      const array = [...arr];
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // ==========================================
+    // التمرين 1: أتذكر وأنجز
+    // ==========================================
+    const ex1CorrectSentences = [
+      "ما هذا التصرف يا وسيم؟",
+      "كل مما يليك !",
+      "فرسولنا الكريم (صلى الله عليه وسلم) يقول:",
+      "\"يا غلام سم الله وكل بيمينك وكل مما يليك\"",
+      "أريد قطعة اللحم الكبيرة.",
+      "فأنا جوعان.",
+      "لا تؤثر نفسك بأكبر قطعة وأحسنها.",
+      "فهذه أنانية !",
+      "احترم آداب الأكل مع الجماعة يا بني.",
+      "واقنع بالجزء المخصص لك فقط",
+      "ولا تبدأ قبل الآخرين."
+    ];
+
+    let ex1CurrentIndex = 0;
+    let ex1CorrectCount = 0;
+    let ex1IncorrectCount = 0;
+
+    function initExercise1() {
+      ex1CurrentIndex = 0;
+      ex1CorrectCount = 0;
+      ex1IncorrectCount = 0;
+      document.getElementById('ex1-correct').textContent = '0';
+      document.getElementById('ex1-incorrect').textContent = '0';
+
+      const pool = document.getElementById('ex1-pool');
+      pool.innerHTML = '';
+      const orderedBox = document.getElementById('ex1-ordered');
+      orderedBox.innerHTML = '<span style="color: #888;" id="ex1-empty-note">الجمل المرتبة ستظهر هنا تباعاً...</span>';
+
+      const feedback = document.getElementById('ex1-feedback');
+      feedback.style.display = 'none';
+
+      const shuffled = shuffle(ex1CorrectSentences);
+      shuffled.forEach((sentence) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-choice';
+        btn.textContent = sentence;
+        btn.onclick = () => handleEx1Choice(btn, sentence);
+        pool.appendChild(btn);
+      });
+    }
+
+    function handleEx1Choice(btn, sentence) {
+      const feedback = document.getElementById('ex1-feedback');
+      if (sentence === ex1CorrectSentences[ex1CurrentIndex]) {
+        playCorrectSound();
+        ex1CorrectCount++;
+        document.getElementById('ex1-correct').textContent = ex1CorrectCount;
+
+        btn.classList.add('btn-success-active');
+        btn.disabled = true;
+
+        const orderedBox = document.getElementById('ex1-ordered');
+        const emptyNote = document.getElementById('ex1-empty-note');
+        if (emptyNote) emptyNote.remove();
+
+        const item = document.createElement('div');
+        item.className = 'ordered-item';
+        item.textContent = `${ex1CurrentIndex + 1}- ${sentence}`;
+        orderedBox.appendChild(item);
+
+        feedback.textContent = "أحسنت! اختيار صحيح في مكانه.";
+        feedback.className = "feedback-banner feedback-correct";
+
+        ex1CurrentIndex++;
+        if (ex1CurrentIndex === ex1CorrectSentences.length) {
+          feedback.textContent = "رائع جداً! تم ترتيب جميع الجمل بالكامل وبشكل سليم.";
+        }
+      } else {
+        playIncorrectSound();
+        ex1IncorrectCount++;
+        document.getElementById('ex1-incorrect').textContent = ex1IncorrectCount;
+
+        btn.classList.add('btn-danger-active');
+        feedback.textContent = "إجابة غير صحيحة، حاول اختيار جملة أخرى تكون مناسبة للترتيب التالي.";
+        feedback.className = "feedback-banner feedback-wrong";
+
+        setTimeout(() => {
+          btn.classList.remove('btn-danger-active');
+        }, 800);
+      }
+    }
+
+    // ==========================================
+    // التمرين 2: أستعمل الصيغة
+    // ==========================================
+    const ex2Data = [
+      { pieClass: 'pie-half', answer: 'نصف' },
+      { pieClass: 'pie-quarter', answer: 'ربع' },
+      { pieClass: 'pie-part', answer: 'جزء' }
+    ];
+
+    let ex2Correct = 0, ex2Incorrect = 0;
+
+    function initExercise2() {
+      ex2Correct = 0; ex2Incorrect = 0;
+      document.getElementById('ex2-correct').textContent = '0';
+      document.getElementById('ex2-incorrect').textContent = '0';
+      const container = document.getElementById('ex2-container');
+      container.innerHTML = '';
+      const options = ['كل', 'نصف', 'ربع', 'جزء'];
+
+      ex2Data.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'pie-preview';
+        row.style.flexWrap = 'wrap';
+
+        const circle = document.createElement('div');
+        circle.className = `pie-circle ${item.pieClass}`;
+        row.appendChild(circle);
+
+        const content = document.createElement('div');
+        content.style.flex = "1";
+        content.innerHTML = `<span style="font-size:1.1rem; font-weight:500;">( .... ) سَطْحِ الْقُرْصِ مُلَوَّنٌ</span><br>`;
+
+        const btnGroup = document.createElement('div');
+        btnGroup.style.marginTop = '8px';
+
+        options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = opt;
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (opt === item.answer) {
+              playCorrectSound();
+              ex2Correct++;
+              document.getElementById('ex2-correct').textContent = ex2Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex2Incorrect++;
+              document.getElementById('ex2-incorrect').textContent = ex2Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+
+        content.appendChild(btnGroup);
+        row.appendChild(content);
+        container.appendChild(row);
+      });
+    }
+
+    // ==========================================
+    // التمرين 3: أفهم النص
+    // ==========================================
+    const ex3Data = [
+      { text: "1- زار الجد منزل ابنه أول أيام عيد الفطر.", ans: "خطأ" },
+      { text: "2- حميد طفل مؤدب ويحب جده كثيرا.", ans: "صحيح" },
+      { text: "3- سقط وسيم على الأرض نتيجة لهفته.", ans: "صحيح" },
+      { text: "4- لم يصب وسيم بأي مكروه عندما سقط.", ans: "خطأ" },
+      { text: "5- اشترى وسيم لأخيه لعبة تسلية.", ans: "خطأ" }
+    ];
+
+    let ex3Correct = 0, ex3Incorrect = 0;
+
+    function initExercise3() {
+      ex3Correct = 0; ex3Incorrect = 0;
+      document.getElementById('ex3-correct').textContent = '0';
+      document.getElementById('ex3-incorrect').textContent = '0';
+      const container = document.getElementById('ex3-container');
+      container.innerHTML = '';
+
+      ex3Data.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'q-row';
+
+        const textSpan = document.createElement('div');
+        textSpan.className = 'q-text';
+        textSpan.textContent = item.text;
+        row.appendChild(textSpan);
+
+        const btnGroup = document.createElement('div');
+        ['صحيح', 'خطأ'].forEach(choice => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = choice;
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (choice === item.ans) {
+              playCorrectSound();
+              ex3Correct++;
+              document.getElementById('ex3-correct').textContent = ex3Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex3Incorrect++;
+              document.getElementById('ex3-incorrect').textContent = ex3Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+
+        row.appendChild(btnGroup);
+        container.appendChild(row);
+      });
+    }
+
+    // ==========================================
+    // التمرين 4: القسم الأول
+    // ==========================================
+    const ex4Categories = [
+      { name: "اسم انسان", words: ["وسيم", "حميد", "خالد", "أمينة", "زينب"] },
+      { name: "اسم حيوان", words: ["قط", "كلب", "حمامة", "أسد", "سمكة"] },
+      { name: "اسم نبات", words: ["وردة", "بطيخ", "عنب", "حشيش", "طماطم"] },
+      { name: "اسم شيء", words: ["كرسي", "طاولة", "باب", "سبورة", "نافذة"] },
+      { name: "اسم بلد أو مكان", words: ["مكة", "إسطنبول", "كندا", "ألمانيا", "تونس"] }
+    ];
+
+    let currentStackedCatIdx = 0;
+    let currentCatAttempts = 0;
+    let ex4P1Correct = 0, ex4P1Incorrect = 0;
+
+    function initExercise4Part1() {
+      currentStackedCatIdx = 0;
+      currentCatAttempts = 0;
+      ex4P1Correct = 0;
+      ex4P1Incorrect = 0;
+      document.getElementById('ex4-p1-correct').textContent = '0';
+      document.getElementById('ex4-p1-incorrect').textContent = '0';
+
+      const container = document.getElementById('ex4-stacked-container');
+      container.innerHTML = '';
+
+      let allWords = [];
+      ex4Categories.forEach(cat => {
+        cat.words.forEach(w => allWords.push({ word: w, catName: cat.name }));
+      });
+
+      ex4Categories.forEach((cat, idx) => {
+        const block = document.createElement('div');
+        block.id = `cat-block-${idx}`;
+        block.className = `cat-stacked-block ${idx === 0 ? 'cat-stacked-active' : 'cat-stacked-disabled'}`;
+
+        const header = document.createElement('div');
+        header.className = 'cat-header';
+        header.innerHTML = `<span>الفئة (${idx + 1}): ${cat.name}</span><span id="cat-status-${idx}" style="font-size:0.95rem; font-weight:normal;">المحاولات: 0 / 3</span>`;
+        block.appendChild(header);
+
+        const pool = document.createElement('div');
+        pool.style.display = 'flex';
+        pool.style.flexWrap = 'wrap';
+        pool.style.gap = '6px';
+
+        const correctWords = cat.words.map(w => ({ word: w, catName: cat.name }));
+        const otherWords = allWords.filter(w => w.catName !== cat.name);
+        const selectedChoices = shuffle([...shuffle(correctWords).slice(0, 4), ...shuffle(otherWords).slice(0, 4)]);
+
+        selectedChoices.forEach(item => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = item.word;
+          if (idx !== 0) btn.disabled = true;
+
+          btn.onclick = () => {
+            currentCatAttempts++;
+            btn.disabled = true;
+
+            if (item.catName === cat.name) {
+              playCorrectSound();
+              ex4P1Correct++;
+              document.getElementById('ex4-p1-correct').textContent = ex4P1Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex4P1Incorrect++;
+              document.getElementById('ex4-p1-incorrect').textContent = ex4P1Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+
+            document.getElementById(`cat-status-${idx}`).textContent = `المحاولات: ${currentCatAttempts} / 3`;
+
+            if (currentCatAttempts >= 3) {
+              Array.from(pool.children).forEach(b => b.disabled = true);
+              block.className = 'cat-stacked-block cat-stacked-disabled';
+
+              if (currentStackedCatIdx < ex4Categories.length - 1) {
+                currentStackedCatIdx++;
+                currentCatAttempts = 0;
+                const nextBlock = document.getElementById(`cat-block-${currentStackedCatIdx}`);
+                nextBlock.className = 'cat-stacked-block cat-stacked-active';
+                const nextPool = nextBlock.querySelector('div:last-child');
+                Array.from(nextPool.children).forEach(b => b.disabled = false);
+              }
+            }
+          };
+          pool.appendChild(btn);
+        });
+
+        block.appendChild(pool);
+        container.appendChild(block);
+      });
+    }
+
+    // التمرين 4 - القسم الثاني
+    const ex4P2Data = [
+      { text: "تَسَلَّقَ الطِّفْلُ ...................", ans: "شجرة", file: "الطفل والشجرة" },
+      { text: "يَطُوفُ الْحُجَّاجُ حَوْلَ ...................", ans: "الكعبة", file: "الكعبة المشرفة" },
+      { text: "تَعِيشُ ................... فِي الْبَرَارِي", ans: "الحيوانات", file: "الحيوانات في البراري" }
+    ];
+
+    const ex4P2Options = ["شجرة", "الكعبة", "الحيوانات", "عمارة", "درج", "فندق", "مقام الشهيد", "حديقة الحيوانات", "مزرعة"];
+    let ex4P2Correct = 0, ex4P2Incorrect = 0;
+
+    function initExercise4Part2() {
+      ex4P2Correct = 0; ex4P2Incorrect = 0;
+      document.getElementById('ex4-p2-correct').textContent = '0';
+      document.getElementById('ex4-p2-incorrect').textContent = '0';
+      const container = document.getElementById('ex4-p2-container');
+      container.innerHTML = '';
+
+      ex4P2Data.forEach(item => {
+        const box = document.createElement('div');
+        box.className = 'image-q-card';
+
+        const img = document.createElement('img');
+        img.className = 'real-q-img';
+        img.alt = item.ans;
+
+        img.src = `${item.file}.png`;
+        img.onerror = function() {
+          if (this.src.endsWith('.png')) {
+            this.src = `${item.file}.jpg`;
+          } else if (this.src.endsWith('.jpg')) {
+            this.src = `${item.file}.jpeg`;
+          }
+        };
+
+        box.appendChild(img);
+
+        const content = document.createElement('div');
+        content.className = 'image-q-content';
+
+        const p = document.createElement('p');
+        p.style.fontSize = '1.15rem';
+        p.style.fontWeight = 'bold';
+        p.style.margin = '0 0 10px 0';
+        p.textContent = item.text;
+        content.appendChild(p);
+
+        const btnGroup = document.createElement('div');
+        const shuffledOpts = shuffle(ex4P2Options);
+
+        shuffledOpts.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = opt;
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (opt === item.ans) {
+              playCorrectSound();
+              ex4P2Correct++;
+              document.getElementById('ex4-p2-correct').textContent = ex4P2Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex4P2Incorrect++;
+              document.getElementById('ex4-p2-incorrect').textContent = ex4P2Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+
+        content.appendChild(btnGroup);
+        box.appendChild(content);
+        container.appendChild(box);
+      });
+    }
+
+    // ==========================================
+    // التمرين 5: إملاء
+    // ==========================================
+    const ex5Data = [
+      { text: "1- أوضع في نهاية السؤال، هل عرفت من أكون؟", ans: "؟" },
+      { text: "2- أوضع عند التعجب، ويالروعتي وجمالي!", ans: "!" },
+      { text: "3- أوضع في نهاية الجملة، مثل سقط وسيم.", ans: "." }
+    ];
+
+    let ex5Correct = 0, ex5Incorrect = 0;
+
+    function initExercise5() {
+      ex5Correct = 0; ex5Incorrect = 0;
+      document.getElementById('ex5-correct').textContent = '0';
+      document.getElementById('ex5-incorrect').textContent = '0';
+      const container = document.getElementById('ex5-container');
+      container.innerHTML = '';
+      const marks = ["،", ".", "؟", "!"];
+
+      ex5Data.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'q-row';
+
+        const txt = document.createElement('div');
+        txt.className = 'q-text';
+        txt.textContent = item.text;
+        row.appendChild(txt);
+
+        const btnGroup = document.createElement('div');
+        marks.forEach(m => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = m;
+          btn.style.fontSize = '1.3rem';
+          btn.style.minWidth = '45px';
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (m === item.ans) {
+              playCorrectSound();
+              ex5Correct++;
+              document.getElementById('ex5-correct').textContent = ex5Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex5Incorrect++;
+              document.getElementById('ex5-incorrect').textContent = ex5Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+
+        row.appendChild(btnGroup);
+        container.appendChild(row);
+      });
+    }
+
+    // ==========================================
+    // التمرين 6: أقيم تعلماتي
+    // ==========================================
+    // 6.1 خريطة الكلمة
+    const ex6P1Data = [
+      { q: "الأنانية معناها:", choices: ["إيثار الغير عن النفس", "حب النفس فقط", "التعاون مع الناس"], ans: "حب النفس فقط" },
+      { q: "الأنانية ضدها:", choices: ["الإيثار", "الصدق", "الصداقة"], ans: "الإيثار" },
+      { q: "نوع كلمة الأنانية:", choices: ["اسم", "فعل", "فاعل"], ans: "اسم" }
+    ];
+    let ex6P1Correct = 0, ex6P1Incorrect = 0;
+
+    function initEx6P1() {
+      ex6P1Correct = 0; ex6P1Incorrect = 0;
+      document.getElementById('ex6-p1-correct').textContent = '0';
+      document.getElementById('ex6-p1-incorrect').textContent = '0';
+      const container = document.getElementById('ex6-p1-container');
+      container.innerHTML = '';
+
+      ex6P1Data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'q-row';
+        div.innerHTML = `<div class="q-text">${item.q}</div>`;
+
+        const btnGroup = document.createElement('div');
+        item.choices.forEach(ch => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = ch;
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (ch === item.ans) {
+              playCorrectSound();
+              ex6P1Correct++;
+              document.getElementById('ex6-p1-correct').textContent = ex6P1Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex6P1Incorrect++;
+              document.getElementById('ex6-p1-incorrect').textContent = ex6P1Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+        div.appendChild(btnGroup);
+        container.appendChild(div);
+      });
+    }
+
+    // 6.2 سلوك صحيح أم خاطئ
+    const ex6P2Data = [
+      { q: "وسيم: لن أبدأ الأكل حتى يجلس الجميع.", ans: "سلوك صحيح" },
+      { q: "الأم: ما هكذا نتصرف يا وسيم، كل مما يليك.", ans: "سلوك صحيح" },
+      { q: "الأب: اختر ما يعجبك قبل أن يلحق إخوانك.", ans: "سلوك خاطئ" }
+    ];
+    let ex6P2Correct = 0, ex6P2Incorrect = 0;
+
+    function initEx6P2() {
+      ex6P2Correct = 0; ex6P2Incorrect = 0;
+      document.getElementById('ex6-p2-correct').textContent = '0';
+      document.getElementById('ex6-p2-incorrect').textContent = '0';
+      const container = document.getElementById('ex6-p2-container');
+      container.innerHTML = '';
+
+      ex6P2Data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'q-row';
+        div.innerHTML = `<div class="q-text">${item.q}</div>`;
+
+        const btnGroup = document.createElement('div');
+        ["سلوك صحيح", "سلوك خاطئ"].forEach(ch => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = ch;
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (ch === item.ans) {
+              playCorrectSound();
+              ex6P2Correct++;
+              document.getElementById('ex6-p2-correct').textContent = ex6P2Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex6P2Incorrect++;
+              document.getElementById('ex6-p2-incorrect').textContent = ex6P2Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+        div.appendChild(btnGroup);
+        container.appendChild(div);
+      });
+    }
+
+    // 6.3 عبر عن كل صورة
+    const ex6P3Data = [
+      { text: ".... التلاميذ في القسم", valid: ["بعض"], file: "التلاميذ في القسم" },
+      { text: ".... من في المسجد يصلي", valid: ["كل", "جميع"], file: "المصلين في المسجد" },
+      { text: ".... الدلو فارغ", valid: ["ربع"], file: "الدلو" },
+      { text: ".... التلاميذ يركبون الباص", valid: ["بعض"], file: "باص المدرسة" }
+    ];
+    let ex6P3Correct = 0, ex6P3Incorrect = 0;
+
+    function initEx6P3() {
+      ex6P3Correct = 0; ex6P3Incorrect = 0;
+      document.getElementById('ex6-p3-correct').textContent = '0';
+      document.getElementById('ex6-p3-incorrect').textContent = '0';
+      const container = document.getElementById('ex6-p3-container');
+      container.innerHTML = '';
+      const choices = ["كل", "ربع", "بعض", "نصف", "جميع"];
+
+      ex6P3Data.forEach(item => {
+        const box = document.createElement('div');
+        box.className = 'image-q-card';
+
+        const img = document.createElement('img');
+        img.className = 'real-q-img';
+        img.alt = item.text;
+
+        img.src = `${item.file}.png`;
+        img.onerror = function() {
+          if (this.src.endsWith('.png')) {
+            this.src = `${item.file}.jpg`;
+          } else if (this.src.endsWith('.jpg')) {
+            this.src = `${item.file}.jpeg`;
+          }
+        };
+
+        box.appendChild(img);
+
+        const content = document.createElement('div');
+        content.className = 'image-q-content';
+
+        const p = document.createElement('p');
+        p.style.fontSize = '1.15rem';
+        p.style.fontWeight = 'bold';
+        p.style.margin = '0 0 10px 0';
+        p.textContent = item.text;
+        content.appendChild(p);
+
+        const btnGroup = document.createElement('div');
+        choices.forEach(ch => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = ch;
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (item.valid.includes(ch)) {
+              playCorrectSound();
+              ex6P3Correct++;
+              document.getElementById('ex6-p3-correct').textContent = ex6P3Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex6P3Incorrect++;
+              document.getElementById('ex6-p3-incorrect').textContent = ex6P3Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+
+        content.appendChild(btnGroup);
+        box.appendChild(content);
+        container.appendChild(box);
+      });
+    }
+
+    // 6.4 الصفات الحميدة (تم استبدال الاستيقاظ باكراً بـ احترام الجيران)
+    const ex6P4Pool = ["الإيثار", "المواساة", "الادخار", "الطيبة", "الشهامة", "الاجتهاد في الدراسة", "احترام الجيران", "الرفق بالحيوان"];
+    const ex6P4Valid = ["الإيثار", "المواساة", "الادخار", "الطيبة"];
+    let ex6P4Correct = 0, ex6P4Incorrect = 0;
+
+    function initEx6P4() {
+      ex6P4Correct = 0; ex6P4Incorrect = 0;
+      document.getElementById('ex6-p4-correct').textContent = '0';
+      document.getElementById('ex6-p4-incorrect').textContent = '0';
+      const pool = document.getElementById('ex6-p4-pool');
+      pool.innerHTML = '';
+      const shuffled = shuffle(ex6P4Pool);
+
+      shuffled.forEach(w => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-choice';
+        btn.textContent = w;
+        btn.onclick = () => {
+          btn.disabled = true;
+          if (ex6P4Valid.includes(w)) {
+            playCorrectSound();
+            ex6P4Correct++;
+            document.getElementById('ex6-p4-correct').textContent = ex6P4Correct;
+            btn.classList.add('btn-success-active');
+          } else {
+            playIncorrectSound();
+            ex6P4Incorrect++;
+            document.getElementById('ex6-p4-incorrect').textContent = ex6P4Incorrect;
+            btn.classList.add('btn-danger-active');
+          }
+        };
+        pool.appendChild(btn);
+      });
+    }
+
+    // 6.5 علامة الوقف المناسبة
+    const ex6P5Data = [
+      { q: "1- ما أروع التسامح", ans: "!" },
+      { q: "2- يحب الجد حفيديه", ans: "." },
+      { q: "3- متى جاء الجد", ans: "؟" },
+      { q: "4- عرف وسيم خطأه", ans: "." }
+    ];
+    let ex6P5Correct = 0, ex6P5Incorrect = 0;
+
+    function initEx6P5() {
+      ex6P5Correct = 0; ex6P5Incorrect = 0;
+      document.getElementById('ex6-p5-correct').textContent = '0';
+      document.getElementById('ex6-p5-incorrect').textContent = '0';
+      const container = document.getElementById('ex6-p5-container');
+      container.innerHTML = '';
+      const marks = [".", "؟", "!"];
+
+      ex6P5Data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'q-row';
+        div.innerHTML = `<div class="q-text">${item.q}</div>`;
+
+        const btnGroup = document.createElement('div');
+        marks.forEach(m => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = m;
+          btn.style.fontSize = '1.3rem';
+          btn.style.minWidth = '45px';
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (m === item.ans) {
+              playCorrectSound();
+              ex6P5Correct++;
+              document.getElementById('ex6-p5-correct').textContent = ex6P5Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex6P5Incorrect++;
+              document.getElementById('ex6-p5-incorrect').textContent = ex6P5Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+        div.appendChild(btnGroup);
+        container.appendChild(div);
+      });
+    }
+
+    // 6.6 الأسماء فقط
+    const ex6P6Words = ["أخبر", "الجبيرة", "الدرج", "منزل", "أخذ", "سقط", "الهدية", "الجد"];
+    const ex6P6CorrectWords = ["الجبيرة", "الدرج", "منزل", "الهدية", "الجد"];
+    let ex6P6Correct = 0, ex6P6Incorrect = 0;
+
+    function initEx6P6() {
+      ex6P6Correct = 0; ex6P6Incorrect = 0;
+      document.getElementById('ex6-p6-correct').textContent = '0';
+      document.getElementById('ex6-p6-incorrect').textContent = '0';
+      const pool = document.getElementById('ex6-p6-pool');
+      pool.innerHTML = '';
+      const shuffled = shuffle(ex6P6Words);
+
+      shuffled.forEach(w => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-choice';
+        btn.textContent = w;
+        btn.onclick = () => {
+          btn.disabled = true;
+          if (ex6P6CorrectWords.includes(w)) {
+            playCorrectSound();
+            ex6P6Correct++;
+            document.getElementById('ex6-p6-correct').textContent = ex6P6Correct;
+            btn.classList.add('btn-success-active');
+          } else {
+            playIncorrectSound();
+            ex6P6Incorrect++;
+            document.getElementById('ex6-p6-incorrect').textContent = ex6P6Incorrect;
+            btn.classList.add('btn-danger-active');
+          }
+        };
+        pool.appendChild(btn);
+      });
+    }
+
+    // ==========================================
+    // التمرين 7: أتدرب على التعبير الكتابي
+    // ==========================================
+    const ex7Data = [
+      { q: "السؤال 1: الأب شخصية من شخصيات القصة", choices: ["صحيح", "خطأ"], ans: "خطأ" },
+      { q: "السؤال 1: الأم شخصية من شخصيات القصة", choices: ["صحيح", "خطأ"], ans: "خطأ" },
+      { q: "السؤال 1: إسراء شخصية من شخصيات القصة", choices: ["صحيح", "خطأ"], ans: "صحيح" },
+      { q: "السؤال 1: الذئب شخصية من شخصيات القصة", choices: ["صحيح", "خطأ"], ans: "خطأ" },
+      { q: "السؤال 1: شهاب شخصية من شخصيات القصة", choices: ["صحيح", "خطأ"], ans: "صحيح" },
+      { q: "السؤال 2: أين جرت أحداث القصة؟", choices: ["الغابة", "المنزل", "المدرسة", "الحديقة"], ans: "الحديقة" },
+      { q: "السؤال 3: ما هو الزمن الذي جرت فيه الأحداث؟", choices: ["في قديم الزمان", "في أحد الأيام"], ans: "في أحد الأيام" },
+      { q: "السؤال 4: شجار بين شهاب وإسراء بسبب الطائرة الورقية", choices: ["صحيح", "خطأ"], ans: "خطأ" },
+      { q: "السؤال 4: علقت الطائرة الورقية بين أغصان الشجرة", choices: ["صحيح", "خطأ"], ans: "صحيح" }
+    ];
+    let ex7Correct = 0, ex7Incorrect = 0;
+
+    function initExercise7() {
+      ex7Correct = 0; ex7Incorrect = 0;
+      document.getElementById('ex7-correct').textContent = '0';
+      document.getElementById('ex7-incorrect').textContent = '0';
+      const container = document.getElementById('ex7-container');
+      container.innerHTML = '';
+
+      ex7Data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'q-row';
+        div.innerHTML = `<div class="q-text">${item.q}</div>`;
+
+        const btnGroup = document.createElement('div');
+        item.choices.forEach(ch => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice';
+          btn.textContent = ch;
+          btn.onclick = () => {
+            Array.from(btnGroup.children).forEach(b => b.disabled = true);
+            if (ch === item.ans) {
+              playCorrectSound();
+              ex7Correct++;
+              document.getElementById('ex7-correct').textContent = ex7Correct;
+              btn.classList.add('btn-success-active');
+            } else {
+              playIncorrectSound();
+              ex7Incorrect++;
+              document.getElementById('ex7-incorrect').textContent = ex7Incorrect;
+              btn.classList.add('btn-danger-active');
+            }
+          };
+          btnGroup.appendChild(btn);
+        });
+
+        div.appendChild(btnGroup);
+        container.appendChild(div);
+      });
+    }
+
+    // ==========================================
+    // حساب التقييم الإجمالي
+    // ==========================================
+    function calculateTotalEvaluation() {
+      const totCorrect = ex1CorrectCount + ex2Correct + ex3Correct + ex4P1Correct + ex4P2Correct + 
+                         ex5Correct + ex6P1Correct + ex6P2Correct + ex6P3Correct + ex6P4Correct + 
+                         ex6P6Correct + ex6P5Correct + ex7Correct;
+
+      const totIncorrect = ex1IncorrectCount + ex2Incorrect + ex3Incorrect + ex4P1Incorrect + ex4P2Incorrect + 
+                           ex5Incorrect + ex6P1Incorrect + ex6P2Incorrect + ex6P3Incorrect + ex6P4Incorrect + 
+                           ex6P6Incorrect + ex6P5Incorrect + ex7Incorrect;
+
+      const totalAttempts = totCorrect + totIncorrect;
+      const percent = totalAttempts === 0 ? 0 : Math.round((totCorrect / totalAttempts) * 100);
+
+      document.getElementById('tot-correct').textContent = totCorrect;
+      document.getElementById('tot-incorrect').textContent = totIncorrect;
+      document.getElementById('tot-percent').textContent = `${percent}%`;
+
+      const gradeEl = document.getElementById('tot-grade');
+      let gradeText = "";
+      let gradeColor = "";
+      let gradeBg = "";
+
+      if (percent >= 90) {
+        gradeText = "ممتاز";
+        gradeColor = "#1b5e20";
+        gradeBg = "#c8e6c9";
+      } else if (percent >= 75) {
+        gradeText = "جيد";
+        gradeColor = "#0d47a1";
+        gradeBg = "#bbdefb";
+      } else if (percent >= 50) {
+        gradeText = "أحسنت لكن يمكنك تقديم الأفضل";
+        gradeColor = "#e65100";
+        gradeBg = "#ffe0b2";
+      } else {
+        gradeText = "المرة القادمة ستكون أفضل";
+        gradeColor = "#b71c1c";
+        gradeBg = "#ffcdd2";
+      }
+
+      gradeEl.textContent = gradeText;
+      gradeEl.style.color = gradeColor;
+      gradeEl.style.backgroundColor = gradeBg;
+
+      document.getElementById('eval-result').style.display = 'block';
+      document.getElementById('eval-result').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // إعادة المحاولة من البداية
+    function restartLesson() {
+      document.getElementById('eval-result').style.display = 'none';
+      initAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function initAll() {
+      initExercise1();
+      initExercise2();
+      initExercise3();
+      initExercise4Part1();
+      initExercise4Part2();
+      initExercise5();
+      initEx6P1();
+      initEx6P2();
+      initEx6P3();
+      initEx6P4();
+      initEx6P5();
+      initEx6P6();
+      initExercise7();
+    }
+
+    window.onload = initAll;
+  </script>
+</body>
+</html>
