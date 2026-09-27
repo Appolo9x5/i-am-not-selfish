@@ -1,72 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <title>تطبيقي المصغر</title>
-    <!-- تضمين سكربت تيليجرام الرسمي لتأمين الـ WebApp -->
-    <script src="https://telegram.org"></script>
-    
-    <style>
-        /* إخفاء محتوى الصفحة افتراضياً حتى يتم التحقق */
-        body { display: none; }
-        .error-container { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; direction: rtl;}
-    </style>
-</head>
-<body>
-
-    <!-- محتوى تطبيقك المصغر الأساسي يوضع هنا -->
-    <div id="app-content">
-        <h1>أهلاً بك داخل التطبيق المصغر لتيليجرام!</h1>
-    </div>
-
-    <script>
-        async function verifyUser() {
-            const tg = window.Telegram.WebApp;
-            const initData = tg.initData;
-
-            if (!initData) {
-                blockAccess("عذراً، لا يمكنك فتح هذا الرابط مباشرة خارج تطبيق تيليجرام.");
-                return;
-            }
-
-            try {
-                // إرسال البيانات لدالة Vercel للتحقق منها عبر الباك إند
-                const response = await fetch('/api/validate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initData })
-                });
-
-                const result = await response.json();
-
-                if (result.valid) {
-                    // إذا نجح التحقق، نظهر المحتوى للمستخدم
-                    document.body.style.display = 'block';
-                    tg.ready();
-                } else {
-                    blockAccess("بيانات التحقق غير صحيحة أو تم التلاعب بها.");
-                }
-            } catch (err) {
-                blockAccess("حدث خطأ أثناء الاتصال بالخادم.");
-            }
-        }
-
-        function blockAccess(message) {
-            document.body.innerHTML = `<div class="error-container"><h2>${message}</h2></div>`;
-            document.body.style.display = 'block';
-        }
-
-        // تشغيل التحقق فوراً عند تحميل الصفحة
-        verifyUser();
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>الوحدة الأولى - أنا لست أنانياً</title>
+  
+  <!-- مكتبة Telegram WebApp الرسمية -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root {
       --primary: #1976d2;
@@ -90,6 +31,42 @@
       margin: 0;
       padding: 15px;
       direction: rtl;
+    }
+
+    /* شاشة التحقق من الأمان وتيليجرام */
+    #auth-guard {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #e0e0e0;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* إخفاء التطبيق الرئيسي إلى حين نجاح التحقق */
+    #main-content {
+      display: none;
     }
 
     .container {
@@ -381,232 +358,292 @@
 </head>
 <body>
 
-  <!-- تنبيهات الصوت المربوطة بالملفات مع نظام بديل مدمج -->
-  <audio id="snd-correct" src="correct.mp3" preload="auto"></audio>
-  <audio id="snd-incorrect" src="incorrect.mp3" preload="auto"></audio>
+  <!-- شاشة التحقق والحماية عبر Telegram API -->
+  <div id="auth-guard">
+    <div class="spinner" id="guard-spinner"></div>
+    <h2 id="guard-title" style="color: var(--primary);">جارٍ التحقق من الأمان...</h2>
+    <p id="guard-desc" style="color: #666; max-width: 400px;">يرجى الانتظار، يتم التحقق من صحة الدخول عبر تيليجرام.</p>
+  </div>
 
-  <div class="container">
-    <header>
-      <h1>الوحدة الأولى - أنا لست أنانياً</h1>
-      <p>درس تفاعلي متوافق مع المنهاج الرسمي</p>
-    </header>
+  <!-- حاوية الدرس الرئيسية (تُعرض فقط بعد نجاح التحقق) -->
+  <div id="main-content">
+    <audio id="snd-correct" src="correct.mp3" preload="auto"></audio>
+    <audio id="snd-incorrect" src="incorrect.mp3" preload="auto"></audio>
 
-    <!-- التمرين 1 -->
-    <section class="card" id="ex1">
-      <h2 class="card-title">التمرين الأول: أتذكر وأنجز</h2>
-      <p class="instruction">استمع إلى المقطع الصوتي بعناية، ثم رتّب الجمل المبعثرة بالترتيب الصحيح:</p>
-      
-      <div style="margin-bottom: 20px; text-align: center; background: #eef2f7; padding: 15px; border-radius: 10px;">
-        <audio id="player-main" controls style="width: 100%; max-width: 450px;">
-          <source src="audio.mp3" type="audio/mpeg">
-          متصفحك لا يدعم مشغل الصوت.
-        </audio>
-      </div>
+    <div class="container">
+      <header>
+        <h1>الوحدة الأولى - أنا لست أنانياً</h1>
+        <p>درس تفاعلي متوافق مع المنهاج الرسمي</p>
+      </header>
 
-      <div class="ordered-list-box" id="ex1-ordered">
-        <span style="color: #888;" id="ex1-empty-note">الجمل المرتبة ستظهر هنا تباعاً...</span>
-      </div>
+      <!-- التمرين 1 -->
+      <section class="card" id="ex1">
+        <h2 class="card-title">التمرين الأول: أتذكر وأنجز</h2>
+        <p class="instruction">استمع إلى المقطع الصوتي بعناية، ثم رتّب الجمل المبعثرة بالترتيب الصحيح:</p>
+        
+        <div style="margin-bottom: 20px; text-align: center; background: #eef2f7; padding: 15px; border-radius: 10px;">
+          <audio id="player-main" controls style="width: 100%; max-width: 450px;">
+            <source src="audio.mp3" type="audio/mpeg">
+            متصفحك لا يدعم مشغل الصوت.
+          </audio>
+        </div>
 
-      <div id="ex1-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-      <div id="ex1-feedback" class="feedback-banner"></div>
+        <div class="ordered-list-box" id="ex1-ordered">
+          <span style="color: #888;" id="ex1-empty-note">الجمل المرتبة ستظهر هنا تباعاً...</span>
+        </div>
 
-      <div class="score-badge">
-        <span class="score-correct">الاختيارات الصحيحة: <span id="ex1-correct">0</span></span>
-        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex1-incorrect">0</span></span>
-      </div>
-    </section>
+        <div id="ex1-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+        <div id="ex1-feedback" class="feedback-banner"></div>
 
-    <!-- التمرين 2 -->
-    <section class="card" id="ex2">
-      <h2 class="card-title">التمرين الثاني: أستعمل الصيغة</h2>
-      <p class="instruction">أكمل بما يناسب الشكل موظفاً (كل، نصف، ربع، جزء): (محاولة واحدة فقط لكل سؤال)</p>
+        <div class="score-badge">
+          <span class="score-correct">الاختيارات الصحيحة: <span id="ex1-correct">0</span></span>
+          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex1-incorrect">0</span></span>
+        </div>
+      </section>
 
-      <div class="pie-preview" style="border: 2px solid #bbdefb; background: #e3f2fd;">
-        <div class="pie-circle pie-full"></div>
+      <!-- التمرين 2 -->
+      <section class="card" id="ex2">
+        <h2 class="card-title">التمرين الثاني: أستعمل الصيغة</h2>
+        <p class="instruction">أكمل بما يناسب الشكل موظفاً (كل، نصف، ربع، جزء): (محاولة واحدة فقط لكل سؤال)</p>
+
+        <div class="pie-preview" style="border: 2px solid #bbdefb; background: #e3f2fd;">
+          <div class="pie-circle pie-full"></div>
+          <div>
+            <strong>مثال توضيحي:</strong> كُلُّ سَطْحِ الْقُرْصِ مُلَوَّنٌ.
+          </div>
+        </div>
+
+        <div id="ex2-container"></div>
+
+        <div class="score-badge">
+          <span class="score-correct">الاختيارات الصحيحة: <span id="ex2-correct">0</span></span>
+          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex2-incorrect">0</span></span>
+        </div>
+      </section>
+
+      <!-- التمرين 3 -->
+      <section class="card" id="ex3">
+        <h2 class="card-title">التمرين الثالث: أفهم النص</h2>
+        <p class="instruction">ضع صحيح أو خطأ أمام كل عبارة: (محاولة واحدة فقط لكل عبارة)</p>
+
+        <div id="ex3-container"></div>
+
+        <div class="score-badge">
+          <span class="score-correct">الاختيارات الصحيحة: <span id="ex3-correct">0</span></span>
+          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex3-incorrect">0</span></span>
+        </div>
+      </section>
+
+      <!-- التمرين 4 -->
+      <section class="card" id="ex4">
+        <h2 class="card-title">التمرين الرابع: أوظف الاسم</h2>
+        
+        <div style="margin-bottom: 25px;">
+          <h3 style="color: var(--primary);">القسم الأول: تصنيف الأسماء</h3>
+          <p class="instruction">ضع كل اسم مع الفئة التي تناسبه. تُمنح 3 محاولات فقط لكل فئة، ثم يُقفل السؤال وتنتقل للفئة الموالية:</p>
+          
+          <div id="ex4-stacked-container"></div>
+          
+          <div class="score-badge">
+            <span class="score-correct">الاختيارات الصحيحة: <span id="ex4-p1-correct">0</span></span>
+            <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex4-p1-incorrect">0</span></span>
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 25px 0;">
+
         <div>
-          <strong>مثال توضيحي:</strong> كُلُّ سَطْحِ الْقُرْصِ مُلَوَّنٌ.
+          <h3 style="color: var(--primary);">القسم الثاني: التعبير بالاسم المناسب</h3>
+          <p class="instruction">شاهد كل صورة واختر الكلمة المناسبة لها: (محاولة واحدة فقط لكل صورة)</p>
+          <div id="ex4-p2-container"></div>
+          <div class="score-badge">
+            <span class="score-correct">الاختيارات الصحيحة: <span id="ex4-p2-correct">0</span></span>
+            <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex4-p2-incorrect">0</span></span>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div id="ex2-container"></div>
+      <!-- التمرين 5 -->
+      <section class="card" id="ex5">
+        <h2 class="card-title">التمرين الخامس: إملاء</h2>
+        <p class="instruction">تعرف على علامات الوقف وارسمها رسماً صحيحاً داخل الإطار: (محاولة واحدة فقط)</p>
 
-      <div class="score-badge">
-        <span class="score-correct">الاختيارات الصحيحة: <span id="ex2-correct">0</span></span>
-        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex2-incorrect">0</span></span>
-      </div>
-    </section>
+        <div id="ex5-container"></div>
 
-    <!-- التمرين 3 -->
-    <section class="card" id="ex3">
-      <h2 class="card-title">التمرين الثالث: أفهم النص</h2>
-      <p class="instruction">ضع صحيح أو خطأ أمام كل عبارة: (محاولة واحدة فقط لكل عبارة)</p>
+        <div class="score-badge">
+          <span class="score-correct">الاختيارات الصحيحة: <span id="ex5-correct">0</span></span>
+          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex5-incorrect">0</span></span>
+        </div>
+      </section>
 
-      <div id="ex3-container"></div>
-
-      <div class="score-badge">
-        <span class="score-correct">الاختيارات الصحيحة: <span id="ex3-correct">0</span></span>
-        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex3-incorrect">0</span></span>
-      </div>
-    </section>
-
-    <!-- التمرين 4 -->
-    <section class="card" id="ex4">
-      <h2 class="card-title">التمرين الرابع: أوظف الاسم</h2>
-      
-      <!-- القسم الأول: فئات مرتبة رأسياً فوق بعضها -->
-      <div style="margin-bottom: 25px;">
-        <h3 style="color: var(--primary);">القسم الأول: تصنيف الأسماء</h3>
-        <p class="instruction">ضع كل اسم مع الفئة التي تناسبه. تُمنح 3 محاولات فقط لكل فئة، ثم يُقفل السؤال وتنتقل للفئة الموالية:</p>
+      <!-- التمرين 6 -->
+      <section class="card" id="ex6">
+        <h2 class="card-title">التمرين السادس: أقيم تعلماتي</h2>
         
-        <div id="ex4-stacked-container"></div>
-        
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: var(--primary);">1. خريطة الكلمة (الأنانية)</h3>
+          <div id="ex6-p1-container"></div>
+          <div class="score-badge">
+            <span class="score-correct">صحيحة: <span id="ex6-p1-correct">0</span></span>
+            <span class="score-incorrect">خاطئة: <span id="ex6-p1-incorrect">0</span></span>
+          </div>
+        </div>
+        <hr style="border: 0; border-top: 1px dashed #eee;">
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: var(--primary);">2. هل هذا السلوك صحيح أم خاطئ؟</h3>
+          <div id="ex6-p2-container"></div>
+          <div class="score-badge">
+            <span class="score-correct">صحيحة: <span id="ex6-p2-correct">0</span></span>
+            <span class="score-incorrect">خاطئة: <span id="ex6-p2-incorrect">0</span></span>
+          </div>
+        </div>
+        <hr style="border: 0; border-top: 1px dashed #eee;">
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: var(--primary);">3. عبر عن كل صورة مستعملاً (كل، ربع، بعض، نصف، جميع)</h3>
+          <div id="ex6-p3-container"></div>
+          <div class="score-badge">
+            <span class="score-correct">صحيحة: <span id="ex6-p3-correct">0</span></span>
+            <span class="score-incorrect">خاطئة: <span id="ex6-p3-incorrect">0</span></span>
+          </div>
+        </div>
+        <hr style="border: 0; border-top: 1px dashed #eee;">
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: var(--primary);">4. الصفات الحميدة لحميد</h3>
+          <p class="instruction">انقر على الصفات المناسبة لحميد: (محاولة واحدة لكل صفة، تنقفل فور النقر عليها)</p>
+          <div id="ex6-p4-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+          <div class="score-badge">
+            <span class="score-correct">صحيحة: <span id="ex6-p4-correct">0</span></span>
+            <span class="score-incorrect">خاطئة: <span id="ex6-p4-incorrect">0</span></span>
+          </div>
+        </div>
+        <hr style="border: 0; border-top: 1px dashed #eee;">
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="color: var(--primary);">5. اختر علامة الوقف المناسبة (. / ؟ / !)</h3>
+          <div id="ex6-p5-container"></div>
+          <div class="score-badge">
+            <span class="score-correct">صحيحة: <span id="ex6-p5-correct">0</span></span>
+            <span class="score-incorrect">خاطئة: <span id="ex6-p5-incorrect">0</span></span>
+          </div>
+        </div>
+        <hr style="border: 0; border-top: 1px dashed #eee;">
+
+        <div>
+          <h3 style="color: var(--primary);">6. اختر الأسماء فقط من الكلمات</h3>
+          <p class="instruction">انقر على الكلمات التي تعتبر أسماءً فقط: (محاولة واحدة لكل كلمة)</p>
+          <div id="ex6-p6-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+          <div class="score-badge">
+            <span class="score-correct">صحيحة: <span id="ex6-p6-correct">0</span></span>
+            <span class="score-incorrect">خاطئة: <span id="ex6-p6-incorrect">0</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- التمرين 7 -->
+      <section class="card" id="ex7">
+        <h2 class="card-title">التمرين السابع: أتدرب على التعبير الكتابي</h2>
+        <div style="background: #fff9c4; border: 1px solid #fbc02d; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <h3 style="margin-top: 0; color: #f57f17; text-align: center;">قصة: الطائرة الورقية</h3>
+          <p style="line-height: 1.8; font-size: 1.1rem; margin-bottom: 0;">
+            "في أحد الأيام اشترى شهاب طائرة ورقية من مصروفه، فذهب مع أخته إسراء إلى الحديقة وراح يلعب بها، وفجأة علقت الطائرة الورقية بالشجرة. حاول شهاب أن يخلصها ولكنه فشل. فطلب من أخته أن تساعده. تسلقت إسراء الشجرة وأنزلت الطائرة. وهكذا فرح شهاب وشكر أخته وسمح لها أن تلعب معه بالطائرة الورقية."
+          </p>
+        </div>
+
+        <div id="ex7-container"></div>
+
         <div class="score-badge">
-          <span class="score-correct">الاختيارات الصحيحة: <span id="ex4-p1-correct">0</span></span>
-          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex4-p1-incorrect">0</span></span>
+          <span class="score-correct">الاختيارات الصحيحة: <span id="ex7-correct">0</span></span>
+          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex7-incorrect">0</span></span>
         </div>
-      </div>
+      </section>
 
-      <hr style="border: 0; border-top: 1px dashed #ccc; margin: 25px 0;">
-
-      <!-- القسم الثاني -->
-      <div>
-        <h3 style="color: var(--primary);">القسم الثاني: التعبير بالاسم المناسب</h3>
-        <p class="instruction">شاهد كل صورة واختر الكلمة المناسبة لها: (محاولة واحدة فقط لكل صورة)</p>
-        <div id="ex4-p2-container"></div>
-        <div class="score-badge">
-          <span class="score-correct">الاختيارات الصحيحة: <span id="ex4-p2-correct">0</span></span>
-          <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex4-p2-incorrect">0</span></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- التمرين 5 -->
-    <section class="card" id="ex5">
-      <h2 class="card-title">التمرين الخامس: إملاء</h2>
-      <p class="instruction">تعرف على علامات الوقف وارسمها رسماً صحيحاً داخل الإطار: (محاولة واحدة فقط)</p>
-
-      <div id="ex5-container"></div>
-
-      <div class="score-badge">
-        <span class="score-correct">الاختيارات الصحيحة: <span id="ex5-correct">0</span></span>
-        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex5-incorrect">0</span></span>
-      </div>
-    </section>
-
-    <!-- التمرين 6 -->
-    <section class="card" id="ex6">
-      <h2 class="card-title">التمرين السادس: أقيم تعلماتي</h2>
-      
-      <!-- القسم 1 -->
-      <div style="margin-bottom: 20px;">
-        <h3 style="color: var(--primary);">1. خريطة الكلمة (الأنانية)</h3>
-        <div id="ex6-p1-container"></div>
-        <div class="score-badge">
-          <span class="score-correct">صحيحة: <span id="ex6-p1-correct">0</span></span>
-          <span class="score-incorrect">خاطئة: <span id="ex6-p1-incorrect">0</span></span>
-        </div>
-      </div>
-      <hr style="border: 0; border-top: 1px dashed #eee;">
-
-      <!-- القسم 2 -->
-      <div style="margin-bottom: 20px;">
-        <h3 style="color: var(--primary);">2. هل هذا السلوك صحيح أم خاطئ؟</h3>
-        <div id="ex6-p2-container"></div>
-        <div class="score-badge">
-          <span class="score-correct">صحيحة: <span id="ex6-p2-correct">0</span></span>
-          <span class="score-incorrect">خاطئة: <span id="ex6-p2-incorrect">0</span></span>
-        </div>
-      </div>
-      <hr style="border: 0; border-top: 1px dashed #eee;">
-
-      <!-- القسم 3 -->
-      <div style="margin-bottom: 20px;">
-        <h3 style="color: var(--primary);">3. عبر عن كل صورة مستعملاً (كل، ربع، بعض، نصف، جميع)</h3>
-        <div id="ex6-p3-container"></div>
-        <div class="score-badge">
-          <span class="score-correct">صحيحة: <span id="ex6-p3-correct">0</span></span>
-          <span class="score-incorrect">خاطئة: <span id="ex6-p3-incorrect">0</span></span>
-        </div>
-      </div>
-      <hr style="border: 0; border-top: 1px dashed #eee;">
-
-      <!-- القسم 4 (المعدل) -->
-      <div style="margin-bottom: 20px;">
-        <h3 style="color: var(--primary);">4. الصفات الحميدة لحميد</h3>
-        <p class="instruction">انقر على الصفات المناسبة لحميد: (محاولة واحدة لكل صفة، تنقفل فور النقر عليها)</p>
-        <div id="ex6-p4-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-        <div class="score-badge">
-          <span class="score-correct">صحيحة: <span id="ex6-p4-correct">0</span></span>
-          <span class="score-incorrect">خاطئة: <span id="ex6-p4-incorrect">0</span></span>
-        </div>
-      </div>
-      <hr style="border: 0; border-top: 1px dashed #eee;">
-
-      <!-- القسم 5 -->
-      <div style="margin-bottom: 20px;">
-        <h3 style="color: var(--primary);">5. اختر علامة الوقف المناسبة (. / ؟ / !)</h3>
-        <div id="ex6-p5-container"></div>
-        <div class="score-badge">
-          <span class="score-correct">صحيحة: <span id="ex6-p5-correct">0</span></span>
-          <span class="score-incorrect">خاطئة: <span id="ex6-p5-incorrect">0</span></span>
-        </div>
-      </div>
-      <hr style="border: 0; border-top: 1px dashed #eee;">
-
-      <!-- القسم 6 -->
-      <div>
-        <h3 style="color: var(--primary);">6. اختر الأسماء فقط من الكلمات</h3>
-        <p class="instruction">انقر على الكلمات التي تعتبر أسماءً فقط: (محاولة واحدة لكل كلمة)</p>
-        <div id="ex6-p6-pool" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-        <div class="score-badge">
-          <span class="score-correct">صحيحة: <span id="ex6-p6-correct">0</span></span>
-          <span class="score-incorrect">خاطئة: <span id="ex6-p6-incorrect">0</span></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- التمرين 7 -->
-    <section class="card" id="ex7">
-      <h2 class="card-title">التمرين السابع: أتدرب على التعبير الكتابي</h2>
-      <div style="background: #fff9c4; border: 1px solid #fbc02d; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <h3 style="margin-top: 0; color: #f57f17; text-align: center;">قصة: الطائرة الورقية</h3>
-        <p style="line-height: 1.8; font-size: 1.1rem; margin-bottom: 0;">
-          "في أحد الأيام اشترى شهاب طائرة ورقية من مصروفه، فذهب مع أخته إسراء إلى الحديقة وراح يلعب بها، وفجأة علقت الطائرة الورقية بالشجرة. حاول شهاب أن يخلصها ولكنه فشل. فطلب من أخته أن تساعده. تسلقت إسراء الشجرة وأنزلت الطائرة. وهكذا فرح شهاب وشكر أخته وسمح لها أن تلعب معه بالطائرة الورقية."
-        </p>
-      </div>
-
-      <div id="ex7-container"></div>
-
-      <div class="score-badge">
-        <span class="score-correct">الاختيارات الصحيحة: <span id="ex7-correct">0</span></span>
-        <span class="score-incorrect">الاختيارات الخاطئة: <span id="ex7-incorrect">0</span></span>
-      </div>
-    </section>
-
-    <!-- التقييم العام للوحدة مع زر إعادة المحاولة -->
-    <section class="card final-score-section">
-      <h2 style="color: var(--primary-dark); margin-top: 0;">التقييم العام للوحدة التعليمية</h2>
-      <p>اضغط للتحقق من المجموع الكلي لأدائك في كامل الوحدة:</p>
-      <button class="btn-choice" style="background: var(--primary); color: white; border: none; font-size: 1.2rem; padding: 12px 30px;" onclick="calculateTotalEvaluation()">
-        عرض النتيجة النهائية
-      </button>
-
-      <div id="eval-result" style="display: none; margin-top: 20px;">
-        <div style="display: flex; justify-content: center; gap: 30px; font-size: 1.2rem;">
-          <span style="color: var(--success);">إجمالي الإجابات الصحيحة: <strong id="tot-correct">0</strong></span>
-          <span style="color: var(--danger);">إجمالي الإجابات الخاطئة: <strong id="tot-incorrect">0</strong></span>
-        </div>
-        <div class="final-score-val" id="tot-percent">0%</div>
-        <div class="final-grade" id="tot-grade"></div>
-        <br>
-        <button class="btn-restart" onclick="restartLesson()">
-          🔄 إعادة محاولة الاختبار من البداية
+      <!-- التقييم العام للوحدة مع زر إعادة المحاولة -->
+      <section class="card final-score-section">
+        <h2 style="color: var(--primary-dark); margin-top: 0;">التقييم العام للوحدة التعليمية</h2>
+        <p>اضغط للتحقق من المجموع الكلي لأدائك في كامل الوحدة:</p>
+        <button class="btn-choice" style="background: var(--primary); color: white; border: none; font-size: 1.2rem; padding: 12px 30px;" onclick="calculateTotalEvaluation()">
+          عرض النتيجة النهائية
         </button>
-      </div>
-    </section>
+
+        <div id="eval-result" style="display: none; margin-top: 20px;">
+          <div style="display: flex; justify-content: center; gap: 30px; font-size: 1.2rem;">
+            <span style="color: var(--success);">إجمالي الإجابات الصحيحة: <strong id="tot-correct">0</strong></span>
+            <span style="color: var(--danger);">إجمالي الإجابات الخاطئة: <strong id="tot-incorrect">0</strong></span>
+          </div>
+          <div class="final-score-val" id="tot-percent">0%</div>
+          <div class="final-grade" id="tot-grade"></div>
+          <br>
+          <button class="btn-restart" onclick="restartLesson()">
+            🔄 إعادة محاولة الاختبار من البداية
+          </button>
+        </div>
+      </section>
+    </div>
   </div>
 
   <script>
+    // ========================================================
+    // بروتوكول التحقق الأمني مع api/validate.js
+    // ========================================================
+    async function verifyTelegramSession() {
+      const tg = window.Telegram?.WebApp;
+      const guard = document.getElementById('auth-guard');
+      const spinner = document.getElementById('guard-spinner');
+      const title = document.getElementById('guard-title');
+      const desc = document.getElementById('guard-desc');
+      const mainContent = document.getElementById('main-content');
+
+      const initData = tg?.initData;
+
+      if (!initData) {
+        spinner.style.display = 'none';
+        title.textContent = 'وصول غير مصرح به';
+        title.style.color = 'var(--danger)';
+        desc.textContent = 'يجب فتح هذا الدرس من داخل تطبيق تيليجرام فقط لضمان التحقق من الهوية.';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/validate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ initData })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.valid === true) {
+          // نجاح التحقق: فتح الدرس وإشعار تيليجرام
+          guard.style.display = 'none';
+          mainContent.style.display = 'block';
+
+          if (tg) {
+            tg.ready();
+            tg.expand();
+          }
+
+          // بدء تشغيل التمارين
+          initAll();
+        } else {
+          // فشل التحقق
+          spinner.style.display = 'none';
+          title.textContent = 'فشل التحقق الأمني';
+          title.style.color = 'var(--danger)';
+          desc.textContent = 'تعذر التحقق من التوقيع الرقمي لجلسة تيليجرام: ' + (data.error || 'جلسة غير صالحة');
+        }
+      } catch (err) {
+        spinner.style.display = 'none';
+        title.textContent = 'خطأ في الاتصال بالسيرفر';
+        title.style.color = 'var(--danger)';
+        desc.textContent = 'حدث خطأ أثناء محاولة الاتصال بـ /api/validate: ' + err.message;
+      }
+    }
+
     // --- المحرك الصوتي ---
     let audioCtx = null;
 
@@ -1111,7 +1148,6 @@
     // ==========================================
     // التمرين 6: أقيم تعلماتي
     // ==========================================
-    // 6.1 خريطة الكلمة
     const ex6P1Data = [
       { q: "الأنانية معناها:", choices: ["إيثار الغير عن النفس", "حب النفس فقط", "التعاون مع الناس"], ans: "حب النفس فقط" },
       { q: "الأنانية ضدها:", choices: ["الإيثار", "الصدق", "الصداقة"], ans: "الإيثار" },
@@ -1157,7 +1193,6 @@
       });
     }
 
-    // 6.2 سلوك صحيح أم خاطئ
     const ex6P2Data = [
       { q: "وسيم: لن أبدأ الأكل حتى يجلس الجميع.", ans: "سلوك صحيح" },
       { q: "الأم: ما هكذا نتصرف يا وسيم، كل مما يليك.", ans: "سلوك صحيح" },
@@ -1203,7 +1238,6 @@
       });
     }
 
-    // 6.3 عبر عن كل صورة
     const ex6P3Data = [
       { text: ".... التلاميذ في القسم", valid: ["بعض"], file: "التلاميذ في القسم" },
       { text: ".... من في المسجد يصلي", valid: ["كل", "جميع"], file: "المصلين في المسجد" },
@@ -1277,7 +1311,6 @@
       });
     }
 
-    // 6.4 الصفات الحميدة (تم استبدال الاستيقاظ باكراً بـ احترام الجيران)
     const ex6P4Pool = ["الإيثار", "المواساة", "الادخار", "الطيبة", "الشهامة", "الاجتهاد في الدراسة", "احترام الجيران", "الرفق بالحيوان"];
     const ex6P4Valid = ["الإيثار", "المواساة", "الادخار", "الطيبة"];
     let ex6P4Correct = 0, ex6P4Incorrect = 0;
@@ -1312,7 +1345,6 @@
       });
     }
 
-    // 6.5 علامة الوقف المناسبة
     const ex6P5Data = [
       { q: "1- ما أروع التسامح", ans: "!" },
       { q: "2- يحب الجد حفيديه", ans: "." },
@@ -1362,7 +1394,6 @@
       });
     }
 
-    // 6.6 الأسماء فقط
     const ex6P6Words = ["أخبر", "الجبيرة", "الدرج", "منزل", "أخذ", "سقط", "الهدية", "الجد"];
     const ex6P6CorrectWords = ["الجبيرة", "الدرج", "منزل", "الهدية", "الجد"];
     let ex6P6Correct = 0, ex6P6Incorrect = 0;
@@ -1525,17 +1556,8 @@
       initExercise7();
     }
 
-    window.onload = initAll;
+    // يبدأ التحقق أولاً عبر Telegram WebApp فور تحميل الصفحة
+    window.onload = verifyTelegramSession;
   </script>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script>
-Telegram.WebApp.ready();
-
-async function verifyUser() {
-  const initData = Telegram.WebApp.initData;
-  // ...
-}
-verifyUser();
-</script>
 </body>
 </html>
