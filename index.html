@@ -1,4 +1,67 @@
 <!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تطبيقي المصغر</title>
+    <!-- تضمين سكربت تيليجرام الرسمي لتأمين الـ WebApp -->
+    <script src="https://telegram.org"></script>
+    
+    <style>
+        /* إخفاء محتوى الصفحة افتراضياً حتى يتم التحقق */
+        body { display: none; }
+        .error-container { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; direction: rtl;}
+    </style>
+</head>
+<body>
+
+    <!-- محتوى تطبيقك المصغر الأساسي يوضع هنا -->
+    <div id="app-content">
+        <h1>أهلاً بك داخل التطبيق المصغر لتيليجرام!</h1>
+    </div>
+
+    <script>
+        async function verifyUser() {
+            const tg = window.Telegram.WebApp;
+            const initData = tg.initData;
+
+            if (!initData) {
+                blockAccess("عذراً، لا يمكنك فتح هذا الرابط مباشرة خارج تطبيق تيليجرام.");
+                return;
+            }
+
+            try {
+                // إرسال البيانات لدالة Vercel للتحقق منها عبر الباك إند
+                const response = await fetch('/api/validate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData })
+                });
+
+                const result = await response.json();
+
+                if (result.valid) {
+                    // إذا نجح التحقق، نظهر المحتوى للمستخدم
+                    document.body.style.display = 'block';
+                    tg.ready();
+                } else {
+                    blockAccess("بيانات التحقق غير صحيحة أو تم التلاعب بها.");
+                }
+            } catch (err) {
+                blockAccess("حدث خطأ أثناء الاتصال بالخادم.");
+            }
+        }
+
+        function blockAccess(message) {
+            document.body.innerHTML = `<div class="error-container"><h2>${message}</h2></div>`;
+            document.body.style.display = 'block';
+        }
+
+        // تشغيل التحقق فوراً عند تحميل الصفحة
+        verifyUser();
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
